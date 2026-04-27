@@ -1,0 +1,34 @@
+{
+  "name": "playwrighttspoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test_dev": "cross-env ENV_NAME=dev npx playwright test",
+    "test_qa": "cross-env ENV_NAME=qa npx playwright test",
+    "test_demo": "cross-env ENV_NAME=demo npx playwright test",
+    "test_demo_cr_hd": "cross-env ENV_NAME=demo npx playwright test --project=chromium --headed",
+    "test_demo_ff_hd": "cross-env ENV_NAME=demo npx playwright test --project=firefox --headed",
+    "test_demo_web_hd": "cross-env ENV_NAME=demo npx playwright test --project=webkit --headed",
+    "test_demo_cr_hl": "cross-env ENV_NAME=demo npx playwright test --project=chromium",
+    "test_demo_ff_hl": "cross-env ENV_NAME=demo npx playwright test --project=firefox",
+    "test_qa_ui": "cross-env ENV_NAME=qa npx playwright test --ui",
+    "test_demo_cr_hd_@UI": "cross-env ENV_NAME=demo npx playwright test --project=chromium --headed --grep @UI",
+    "test_qa_cr_hd_@SMOKE": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @SMOKE",
+    "test_qa_cr_hd_@VISUAL": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @VISUAL"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^25.6.0"
+  },
+  "dependencies": {
+    "cross-env": "^10.1.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2"
+  }
+}
