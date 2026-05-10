@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 
 });
-test.only('open the psge', async ({ page }) => {
+test('open the psge', async ({ page }) => {
 
     expect(page).toHaveTitle('Conduit | Practice Test Automation',);
     await page.waitForLoadState('networkidle');

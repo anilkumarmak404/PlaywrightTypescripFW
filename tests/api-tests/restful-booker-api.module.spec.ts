@@ -2,18 +2,18 @@ import { expect, test } from '../../fixtures/hooks-fixture';
 import apiPathData from '../../data/api-data/api-path-data.json';
 import restfulApiData from '../../data/api-data/restful-booker-api-module.data.json';
 
-//to run the APi's npm run test_demo_api
+// to run the APi's npm run test_demo_api
 
-// test("Get Booking ID's from api call", async ({ request }) => {
-//     const bookingIds = await request.get("booking");
-//     console.log(await bookingIds.json());
+test("Get Booking ID's from api call", async ({ request }) => {
+    const bookingIds = await request.get("booking");
+    console.log(await bookingIds.json());
 
-// })
-// test("Get the booking details", async ({ request }) => {
-//     const bookingDetails = await request.get('booking/6');
-//     console.log(await bookingDetails.json());
+})
+test("Get the booking details", async ({ request }) => {
+    const bookingDetails = await request.get('booking/6');
+    console.log(await bookingDetails.json());
 
-// });
+});
 test('TC1 :create new booking and verify the booking details', {
     tag: ['@API', '@UAT'],
     annotation: {
