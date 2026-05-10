@@ -3,6 +3,7 @@ import { test } from '..//fixtures/hooks-fixture';
 
 
 //SECRET_KEY=Hgv npm run test_demo_ff_hd
+//SECRET_KEY=Hgv npm run test_demo_api
 
 // test.beforeEach('before each test', async ({ page, loginPage }) => {
 //     await loginPage.gotoOrangeHRM();

@@ -1,0 +1,29 @@
+{
+    "content-type": "application/json; charset=utf-8",
+    "booking_id": 6,
+    "firstname": "Jim",
+    "lastname": "Brown",
+    "totalprice": 555,
+    "create_booking": {
+        "firstname": "ANIL",
+        "lastname": "KUMARM",
+        "totalprice": 111,
+        "depositpaid": true,
+        "bookingdates": {
+            "checkin": "2018-01-01",
+            "checkout": "2019-01-01"
+        },
+        "additionalneeds": "Breakfast"
+    },
+    "update_booking": {
+        "firstname": "ANILNANDHA",
+        "lastname": "KUMARM",
+        "totalprice": 111,
+        "depositpaid": true,
+        "bookingdates": {
+            "checkin": "2018-01-01",
+            "checkout": "2019-01-01"
+        },
+        "additionalneeds": "LUNCH"
+    }
+}

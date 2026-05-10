@@ -36,6 +36,12 @@ export default defineConfig({
   },
 
   use: {
+    baseURL: process.env.API_BASE_URL,
+    extraHTTPHeaders: {
+      Accept: "application/json",
+      'Content-Type': 'application/json',
+      // Authorization: 'basic  cghjfhjkkllhhgjkk'
+    },
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
 
@@ -75,8 +81,12 @@ export default defineConfig({
         storageState: './playwright/.auth/auth.json'
       },
 
-
     },
+    {
+      name: 'apiTest',
+      testDir: './tests/api-tests'
+
+    }
 
     /* Test against mobile viewports. */
     // {

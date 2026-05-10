@@ -15,7 +15,11 @@
     "test_qa_ui": "cross-env ENV_NAME=qa npx playwright test --ui",
     "test_demo_cr_hd_@UI": "cross-env ENV_NAME=demo npx playwright test --project=chromium --headed --grep @UI",
     "test_qa_cr_hd_@SMOKE": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @SMOKE",
-    "test_qa_cr_hd_@VISUAL": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @VISUAL"
+    "test_qa_cr_hd_@VISUAL": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @VISUAL",
+    "test_demo_cr_hl_lf": "cross-env ENV_NAME=demo npx playwright test --project=chromium --last--failed",
+    "test_demo_api": "cross-env ENV_NAME=demo npx playwright test --project=apiTest",
+    "test_dev_api": "cross-env ENV_NAME=dev npx playwright test --project=apiTest",
+    "test_qa_api": "cross-env ENV_NAME=qa npx playwright test --project=apiTest"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
-import { test } from '../fixtures/common-fixtures';
-import { expect } from '@playwright/test'
+import { test, expect } from '../../fixtures/hooks-fixture.ts'
+
 
 test('Global setup for login', async ({ page, loginPage, commonUtils, dashboardPage }) => {
     const decryptedPassword = commonUtils.decryptData(process.env.PASSWORD as string);

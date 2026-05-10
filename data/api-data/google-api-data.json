@@ -1,0 +1,21 @@
+{
+    "addPlaceBody": {
+        "location": {
+            "lat": -18.383494,
+            "lng": 23.427362
+        },
+        "accuracy": 50,
+        "name": "anilkumar house",
+        "phone_number": "(+91) 983 893 3897",
+        "address": "49, side layout, cohen 09",
+        "types": [
+            "education park",
+            "shop"
+        ],
+        "website": "http://anilkumar.com",
+        "language": "French-IN"
+    },
+    "queryParam": {
+        "key": "qaclick123"
+    }
+}
