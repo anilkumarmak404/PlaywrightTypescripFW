@@ -15,23 +15,28 @@ export async function sendSlackMessage(message: SlackMessage): Promise<void> {
 
   const webhook = new IncomingWebhook(url);
 
-  await webhook.send({
-    text: message.title,
-    blocks: [
-      {
-        type: 'header',
-        text: {
-          type: 'plain_text',
-          text: message.title
+  try {
+    await webhook.send({
+      text: message.title,
+      blocks: [
+        {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: message.title
+          }
+        },
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: message.text
+          }
         }
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: message.text
-        }
-      }
-    ]
-  });
+      ]
+    });
+  } catch (error) {
+    const err = error as { code?: string; message?: string };
+    console.warn(`Slack notification skipped: ${err.code ?? err.message ?? 'request failed'}`);
+  }
 }

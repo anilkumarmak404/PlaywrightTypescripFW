@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { scanTests } from './scan-tests';
 import { findDeadTests } from './dead-tests';
 import { detectCoverageDrift } from './coverage-drift';
@@ -5,6 +6,11 @@ import { checkDependencyHealth } from './dependency-health';
 import { findRedundantTests } from './redundant-tests';
 import { writeJson } from '../shared/state-store';
 import { sendSlackMessage } from '../shared/slack';
+
+dotenv.config({
+  path: process.env.ENV_NAME ? `./env-files/.env.${process.env.ENV_NAME}` : './env-files/.env.demo',
+  override: !process.env.CI
+});
 
 async function main() {
   console.log('Maintenance Agent started');
