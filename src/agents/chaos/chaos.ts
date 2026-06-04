@@ -156,12 +156,16 @@ async function main() {
   });
 
   await fs.ensureDir('agent-state');
-  await fs.writeJson('agent-state/latest-chaos-results.json', {
-    createdAt: new Date().toISOString(),
-    total: results.length,
-    failed: results.filter((result) => result.status === 'failed').length,
-    results
-  }, { spaces: 2 });
+  await fs.writeJson(
+    'agent-state/latest-chaos-results.json',
+    {
+      createdAt: new Date().toISOString(),
+      total: results.length,
+      failed: results.filter((result) => result.status === 'failed').length,
+      results
+    },
+    { spaces: 2 }
+  );
 
   for (const result of results) {
     console.log(`${result.status.toUpperCase()} ${result.scenario}: ${result.detail}`);

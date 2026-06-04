@@ -34,7 +34,7 @@
     "agent:reporting": "tsx src/agents/reporting/index.ts",
     "agent:jira:check": "tsx src/agents/reporting/jira-auth-check.ts",
     "agent:weekly-pdf": "tsx src/agents/reporting/executive-pdf.ts",
-    "agent:chaos": "tsx src/agents/chaos/day29-chaos.ts",
+    "agent:chaos": "tsx src/agents/chaos/chaos.ts",
     "observability:up": "docker compose up -d prometheus pushgateway grafana",
     "observability:down": "docker compose down",
     "observability:logs": "docker compose logs -f prometheus pushgateway grafana"
