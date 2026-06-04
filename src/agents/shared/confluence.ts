@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { resilientCall } from './resilience';
 
 type ConfluenceApiError = {
   message?: string;
@@ -58,12 +59,14 @@ function getConfluenceErrorMessage(error: unknown) {
 }
 
 async function confluenceRequest<T>(request: () => Promise<{ data: T }>): Promise<T> {
-  try {
-    const response = await request();
-    return response.data;
-  } catch (error) {
-    throw new Error(getConfluenceErrorMessage(error));
-  }
+  return resilientCall('confluence-api', async () => {
+    try {
+      const response = await request();
+      return response.data;
+    } catch (error) {
+      throw new Error(getConfluenceErrorMessage(error));
+    }
+  });
 }
 
 export async function getConfluencePage(pageId: string): Promise<ConfluencePage> {

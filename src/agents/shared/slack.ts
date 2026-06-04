@@ -1,4 +1,5 @@
 import { IncomingWebhook } from '@slack/webhook';
+import { resilientCall } from './resilience';
 
 type SlackMessage = {
   title: string;
@@ -16,7 +17,7 @@ export async function sendSlackMessage(message: SlackMessage): Promise<void> {
   const webhook = new IncomingWebhook(url);
 
   try {
-    await webhook.send({
+    await resilientCall('slack-webhook', () => webhook.send({
       text: message.title,
       blocks: [
         {
@@ -34,7 +35,7 @@ export async function sendSlackMessage(message: SlackMessage): Promise<void> {
           }
         }
       ]
-    });
+    }));
   } catch (error) {
     const err = error as { code?: string; message?: string };
     console.warn(`Slack notification skipped: ${err.code ?? err.message ?? 'request failed'}`);

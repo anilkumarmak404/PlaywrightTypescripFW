@@ -1,11 +1,13 @@
 import fs from 'fs-extra';
 import type { NormalizedTestResult } from '../shared/types';
+import { logger } from '../shared/logger';
 
 export async function parseLatestAgentResults(): Promise<NormalizedTestResult[]> {
   const path = 'reports/ai-summary/latest-agent-results.json';
 
   if (!(await fs.pathExists(path))) {
-    throw new Error(`Missing ${path}. Run Playwright tests first.`);
+    logger.warn(`Missing ${path}. Reporting agent will continue with zero test results.`);
+    return [];
   }
 
   const data = await fs.readJson(path);

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs-extra';
 import FormData from 'form-data';
+import { resilientCall } from './resilience';
 
 type JiraApiErrorData = {
   errorMessages?: string[];
@@ -138,12 +139,14 @@ function getJiraErrorMessage(error: unknown) {
 }
 
 async function jiraRequest<T>(request: () => Promise<{ data: T }>): Promise<T> {
-  try {
-    const response = await request();
-    return response.data;
-  } catch (error) {
-    throw new Error(getJiraErrorMessage(error));
-  }
+  return resilientCall('jira-api', async () => {
+    try {
+      const response = await request();
+      return response.data;
+    } catch (error) {
+      throw new Error(getJiraErrorMessage(error));
+    }
+  });
 }
 
 export async function verifyJiraAuth(): Promise<JiraUser> {

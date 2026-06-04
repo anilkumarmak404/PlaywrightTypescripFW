@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import type { NormalizedTestResult } from '../shared/types';
+import { resilientCall } from '../shared/resilience';
 
 function encodePushgatewayPathValue(value: string) {
   return encodeURIComponent(value.replace(/\s+/g, '-').toLowerCase());
@@ -17,13 +18,13 @@ async function pushToPushgateway(metrics: string) {
   const environment = encodePushgatewayPathValue(process.env.ENV_NAME ?? 'demo');
   const url = `${pushgatewayUrl.replace(/\/$/, '')}/metrics/job/${job}/environment/${environment}`;
 
-  const response = await fetch(url, {
+  const response = await resilientCall('pushgateway', () => fetch(url, {
     method: 'PUT',
     headers: {
       'Content-Type': 'text/plain; version=0.0.4'
     },
     body: metrics
-  });
+  }));
 
   if (!response.ok) {
     throw new Error(`Pushgateway metrics push failed with status ${response.status}`);

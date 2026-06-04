@@ -6,6 +6,8 @@ import { updateConfluenceReport } from './confluence-report';
 import { sendDailySlackDigest } from './slack-digest';
 import { pushGrafanaMetrics } from './grafana-metrics';
 import { writeJson } from '../shared/state-store';
+import { errorMessage } from '../shared/resilience';
+import { logger } from '../shared/logger';
 
 dotenv.config({
   path: process.env.ENV_NAME ? `./env-files/.env.${process.env.ENV_NAME}` : './env-files/.env.demo',
@@ -13,7 +15,7 @@ dotenv.config({
 });
 
 async function main() {
-  console.log('Reporting Agent started');
+  logger.info('Reporting Agent started');
 
   const results = await parseLatestAgentResults();
 
@@ -32,14 +34,24 @@ async function main() {
     jira
   });
 
-  await pushGrafanaMetrics(results);
-  await updateConfluenceReport(results, summaries, jira);
-  await sendDailySlackDigest(results, summaries);
+  await runOptional('Push Grafana metrics', () => pushGrafanaMetrics(results));
+  await runOptional('Update Confluence report', () =>
+    updateConfluenceReport(results, summaries, jira)
+  );
+  await runOptional('Send Slack digest', () => sendDailySlackDigest(results, summaries));
 
-  console.log('Reporting Agent completed');
+  logger.info('Reporting Agent completed');
 }
 
 main().catch((error) => {
-  console.error('Reporting Agent failed', error);
+  logger.error(`Reporting Agent failed: ${errorMessage(error)}`);
   process.exit(1);
 });
+
+async function runOptional(name: string, action: () => Promise<void>) {
+  try {
+    await action();
+  } catch (error) {
+    logger.warn(`${name} skipped: ${errorMessage(error)}`);
+  }
+}
