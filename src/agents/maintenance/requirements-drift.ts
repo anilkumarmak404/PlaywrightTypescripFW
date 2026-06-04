@@ -17,6 +17,12 @@ type RequirementSnapshot = {
   linkedTests: string[];
 };
 
+type SkippedRequirement = {
+  jiraKey: string;
+  reason: string;
+  linkedTests: string[];
+};
+
 function hashText(text: string) {
   return crypto.createHash('sha256').update(text).digest('hex');
 }
@@ -49,7 +55,7 @@ async function main() {
   const jiraKeys = [...new Set(registry.map((test) => test.jira).filter((x) => x !== 'UNKNOWN'))];
 
   const driftItems = [];
-  const skippedItems = [];
+  const skippedItems: SkippedRequirement[] = [];
 
   for (const jiraKey of jiraKeys) {
     let issue: Awaited<ReturnType<typeof getJiraIssue>>;
@@ -58,9 +64,14 @@ async function main() {
       issue = await getJiraIssue(jiraKey);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      const linkedTests = registry
+        .filter((test) => test.jira === jiraKey)
+        .map((test) => test.id);
+
       skippedItems.push({
         jiraKey,
-        reason: message
+        reason: message,
+        linkedTests
       });
       console.warn(`Requirements drift skipped ${jiraKey}: ${message}`);
       continue;
@@ -101,6 +112,14 @@ async function main() {
   await writeJson('requirement-snapshots.json', snapshots);
   await writeJson('latest-requirement-drift.json', {
     createdAt: new Date().toISOString(),
+    status:
+      driftItems.length > 0
+        ? 'drift_detected'
+        : skippedItems.length > 0
+          ? 'completed_with_skipped_links'
+          : 'no_drift',
+    snapshotCount: Object.keys(snapshots).length,
+    skippedCount: skippedItems.length,
     driftItems,
     skippedItems
   });
@@ -114,7 +133,30 @@ async function main() {
     });
   }
 
-  console.log(`Requirements Drift Agent completed. Drift items: ${driftItems.length}`);
+  if (driftItems.length === 0 && skippedItems.length > 0) {
+    await sendSlackMessage({
+      title: 'Requirements drift skipped Jira links',
+      text: [
+        `*Skipped Jira links:* ${skippedItems.length}`,
+        `These @jira tags do not exist or are not visible to the configured Jira user.`,
+        ``,
+        skippedItems
+          .slice(0, 10)
+          .map((item) => `- *${item.jiraKey}* linked tests: ${item.linkedTests.join(', ')}`)
+          .join('\n'),
+        skippedItems.length > 10 ? `...and ${skippedItems.length - 10} more` : '',
+        ``,
+        `Update test @jira tags to real Jira issue keys from project ${process.env.JIRA_PROJECT_KEY ?? '<project>'}, for example SCRUM-31.`
+      ]
+        .filter(Boolean)
+        .join('\n')
+    });
+  }
+
+  console.log(
+    `Requirements Drift Agent completed. Drift items: ${driftItems.length}. ` +
+      `Snapshots: ${Object.keys(snapshots).length}. Skipped links: ${skippedItems.length}.`
+  );
 }
 
 main().catch((error) => {
