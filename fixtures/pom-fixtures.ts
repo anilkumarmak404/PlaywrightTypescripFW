@@ -4,6 +4,7 @@ import { Dashboardpage } from '../pages/Dashboardpage';
 import { Userpage } from '../pages/Userpage';
 import { LeftNavigationpage } from '../pages/LeftNavigationpage';
 import { Pimpage } from '../pages/Pimpage';
+import { Leavepage } from '../pages/Leavepage';
 
 type pomFixtureType = {
     loginPage: Loginpage;
@@ -11,23 +12,27 @@ type pomFixtureType = {
     userPage: Userpage;
     leftNavigationPage: LeftNavigationpage;
     pimPage: Pimpage;
+    leavePage: Leavepage;
 }
 
 export const test = baseTest.extend<pomFixtureType>({
     loginPage: async ({ page }, use) => {
-        use(new Loginpage(page));
+        await use(new Loginpage(page));
     },
     dashboardPage: async ({ page }, use) => {
-        use(new Dashboardpage(page));
+        await use(new Dashboardpage(page));
     },
     userPage: async ({ page }, use) => {
-        use(new Userpage(page));
+        await use(new Userpage(page));
     },
     leftNavigationPage: async ({ page }, use) => {
-        use(new LeftNavigationpage(page));
+        await use(new LeftNavigationpage(page));
     },
     pimPage: async ({ page }, use) => {
-        use(new Pimpage(page));
+        await use(new Pimpage(page));
+    },
+    leavePage: async ({ page }, use) => {
+        await use(new Leavepage(page));
     }
 
 });

@@ -1,0 +1,53 @@
+name: Requirements Drift Detection
+
+on:
+  schedule:
+    # Every 30 minutes. Keep Jira API limits in mind.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  requirements-drift:
+    name: Jira requirements drift scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CI: true
+      ENV_NAME: demo
+      JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+      JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+      JIRA_PROJECT_ID: ${{ secrets.JIRA_PROJECT_ID }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Requirements Drift Agent
+        run: npm run agent:requirements
+
+      - name: Upload requirements drift artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: requirements-drift-state
+          retention-days: 14
+          path: |
+            agent-state

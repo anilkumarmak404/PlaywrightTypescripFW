@@ -26,9 +26,16 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { open: 'always' }]],
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
+    ['allure-playwright', { resultsDir: 'allure-results' }],
+    ['./src/reporters/agent-json-reporter.ts']
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   timeout: 30 * 1000,
   expect: {
@@ -36,19 +43,16 @@ export default defineConfig({
   },
 
   use: {
-    baseURL: process.env.API_BASE_URL,
-    extraHTTPHeaders: {
-      Accept: "application/json",
-      'Content-Type': 'application/json',
-      // Authorization: 'basic  cghjfhjkkllhhgjkk'
-    },
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL: process.env.BASE_URL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    headless: true
+
   },
 
   /* Configure projects for major browsers */
@@ -60,22 +64,28 @@ export default defineConfig({
     {
       name: 'firefox',
       dependencies: ['setup'],
+      testIgnore: '**/api-tests/**',
       use: {
         ...devices['Desktop Firefox'],
+        video: 'off',
         storageState: './playwright/.auth/auth.json'
       },
     },
     {
       name: 'chromium',
       dependencies: ['setup'],
+      testIgnore: '**/api-tests/**',
       use: {
         ...devices['Desktop Chrome'],
+        deviceScaleFactor: 2,
+        viewport: { width: 1280, height: 720 },
         storageState: './playwright/.auth/auth.json'
       },
     },
     {
       name: 'webkit',
       dependencies: ['setup'],
+      testIgnore: '**/api-tests/**',
       use: {
         ...devices['Desktop Safari'],
         storageState: './playwright/.auth/auth.json'
@@ -84,7 +94,15 @@ export default defineConfig({
     },
     {
       name: 'apiTest',
-      testDir: './tests/api-tests'
+      testDir: './tests/api-tests',
+      use: {
+        baseURL: process.env.API_BASE_URL,
+        extraHTTPHeaders: {
+          Accept: "application/json",
+          'Content-Type': 'application/json',
+          // Authorization: 'basic  cghjfhjkkllhhgjkk'
+        },
+      }
 
     }
 

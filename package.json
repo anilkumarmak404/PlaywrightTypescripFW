@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "maintenance:health": "ts-node maintenance/healthcheck.ts",
   "scripts": {
     "test_dev": "cross-env ENV_NAME=dev npx playwright test",
     "test_qa": "cross-env ENV_NAME=qa npx playwright test",
@@ -15,11 +16,27 @@
     "test_qa_ui": "cross-env ENV_NAME=qa npx playwright test --ui",
     "test_demo_cr_hd_@UI": "cross-env ENV_NAME=demo npx playwright test --project=chromium --headed --grep @UI",
     "test_qa_cr_hd_@SMOKE": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @SMOKE",
+    "test_qa_cr_hd_@SMOKE:allure": "npm run clean:allure && npm run test_qa_cr_hd_@SMOKE && npm run report:allure && npm run report:allure:open",
+    "test_demo_ff_hd:allure": "npm run clean:allure && npm run test_demo_ff_hd && npm run report:allure && npm run report:allure:open:5051",
     "test_qa_cr_hd_@VISUAL": "cross-env ENV_NAME=qa npx playwright test --project=chromium --headed --grep @VISUAL",
     "test_demo_cr_hl_lf": "cross-env ENV_NAME=demo npx playwright test --project=chromium --last--failed",
     "test_demo_api": "cross-env ENV_NAME=demo npx playwright test --project=apiTest",
     "test_dev_api": "cross-env ENV_NAME=dev npx playwright test --project=apiTest",
-    "test_qa_api": "cross-env ENV_NAME=qa npx playwright test --project=apiTest"
+    "test_qa_api": "cross-env ENV_NAME=qa npx playwright test --project=apiTest",
+    "test:e2e": "playwright test",
+    "test:e2e:ci": "playwright test",
+    "clean:allure": "node -e \"const fs=require('fs'); fs.rmSync('allure-results',{recursive:true,force:true}); fs.rmSync('allure-report',{recursive:true,force:true});\"",
+    "report:allure": "allure generate allure-results --clean -o allure-report",
+    "report:allure:open": "allure open allure-report --port 5050",
+    "report:allure:open:5051": "allure open allure-report --port 5051",
+    "agent:maintenance": "tsx src/agents/maintenance/index.ts",
+    "agent:requirements": "tsx src/agents/maintenance/requirements-drift.ts",
+    "agent:reporting": "tsx src/agents/reporting/index.ts",
+    "agent:jira:check": "tsx src/agents/reporting/jira-auth-check.ts",
+    "agent:weekly-pdf": "tsx src/agents/reporting/executive-pdf.ts",
+    "observability:up": "docker compose up -d prometheus pushgateway grafana",
+    "observability:down": "docker compose down",
+    "observability:logs": "docker compose logs -f prometheus pushgateway grafana"
   },
   "keywords": [],
   "author": "",
@@ -28,11 +45,31 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@types/crypto-js": "^4.2.2",
-    "@types/node": "^25.6.0"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.6.0",
+    "allure-commandline": "^2.42.0",
+    "allure-playwright": "^3.9.0",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.5",
+    "minimatch": "^10.2.5",
+    "simple-git": "^3.36.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.0"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "@slack/webhook": "^7.0.9",
+    "axios": "^1.16.1",
+    "chromadb": "^3.4.3",
     "cross-env": "^10.1.0",
     "crypto-js": "^4.2.0",
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "form-data": "^4.0.5",
+    "opossum": "^9.0.0",
+    "prom-client": "^15.1.3",
+    "puppeteer": "^25.1.0",
+    "zod": "^4.4.3"
   }
 }

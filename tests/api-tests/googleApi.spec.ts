@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AddPlace from '../../data/api-data/google-api-data.json'
-test('Google API test', async ({ request }) => {
+test('@id:GOOGLE-API-001 @feature:google-place-api @owner:qa-api @jira:API-GOOGLE-001 Google API test', async ({ request }) => {
     let placeId;
     let newAddress = "6-813/44A Munnekolal,Bang IND";
     const addplaceResponse = await request.post('https://rahulshettyacademy.com/maps/api/place/add/json', {

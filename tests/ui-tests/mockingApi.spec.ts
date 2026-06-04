@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 
 });
-test('open the psge', async ({ page }) => {
+test('@id:MOCK-API-001 @feature:api-mocking @owner:qa-platform @jira:HRM-MOCK-001 open the psge', async ({ page }) => {
 
     expect(page).toHaveTitle('Conduit | Practice Test Automation',);
     await page.waitForLoadState('networkidle');

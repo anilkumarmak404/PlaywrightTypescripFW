@@ -1,27 +1,102 @@
-name: Playwright Tests
+name: Playwright E2E
+
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: Environment file name to load
+        required: false
+        default: demo
+        type: choice
+        options:
+          - demo
+          - qa
+          - dev
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
-  test:
-    timeout-minutes: 60
+  e2e:
+    name: Playwright E2E + Reporting Agent
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      CI: true
+      ENV_NAME: ${{ github.event.inputs.env_name || 'demo' }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      BASE_URL: ${{ secrets.BASE_URL }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      API_USERNAME: ${{ secrets.API_USERNAME }}
+      API_PASSWORD: ${{ secrets.API_PASSWORD }}
+      JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+      JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+      JIRA_PROJECT_ID: ${{ secrets.JIRA_PROJECT_ID }}
+      JIRA_ISSUE_TYPE: ${{ secrets.JIRA_ISSUE_TYPE }}
+      CONFLUENCE_BASE_URL: ${{ secrets.CONFLUENCE_BASE_URL }}
+      CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
+      CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+      CONFLUENCE_PAGE_ID: ${{ secrets.CONFLUENCE_PAGE_ID }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      PUSHGATEWAY_URL: ${{ secrets.PUSHGATEWAY_URL }}
+      PUSHGATEWAY_JOB: playwright-reporting
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Clean Allure output
+        run: npm run clean:allure
+
+      - name: Run Playwright tests
+        run: npm run test:e2e:ci
+
+      - name: Generate Allure report
+        if: always()
+        run: npm run report:allure
+
+      - name: Run Reporting Agent
+        if: always()
+        run: npm run agent:reporting
+
+      - name: Upload Playwright and agent artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-agent-artifacts
+          retention-days: 30
+          path: |
+            playwright-report
+            allure-report
+            allure-results
+            test-results
+            reports
+            agent-state

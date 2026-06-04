@@ -1,0 +1,21 @@
+releaseReadiness:
+  minPassRate: 0.97
+  maxFlakyRate: 0.03
+  maxCriticalFailures: 0
+  maxOpenAutomationBugs: 0
+  minFeatureCoverage: 0.90
+
+maintenance:
+  maxStaleTestDays: 30
+  maxSkippedTests: 0
+  maxDuplicateTestTitles: 0
+  requireTestMetadata:
+    - id
+    - feature
+    - owner
+    - jira
+
+reporting:
+  failBuildOnNoGo: true
+  includeTraceAttachments: true
+  includeScreenshots: true

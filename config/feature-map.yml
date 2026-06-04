@@ -1,0 +1,68 @@
+features:
+  auth:
+    owner: qa-auth
+    jiraProject: HRM-AUTH
+    businessArea: Authentication
+    code:
+      - pages/Loginpage.ts
+      - pages/Dashboardpage.ts
+      - pages/Userpage.ts
+      - fixtures/hooks-fixture.ts
+      - tests/ui-tests/global.setup.ts
+    tests:
+      - tests/ui-tests/login-module.spec.ts
+      - tests/ui-tests/global.setup.ts
+
+  pim-employee-management:
+    owner: qa-hr
+    jiraProject: HRM-PIM
+    businessArea: Employee Management
+    code:
+      - pages/Pimpage.ts
+      - pages/LeftNavigationpage.ts
+      - data/ui-data/pim-module.data.json
+    tests:
+      - tests/ui-tests/pim-module.spec.ts
+
+  api-mocking:
+    owner: qa-platform
+    jiraProject: HRM-MOCK
+    businessArea: Test Infrastructure
+    code:
+      - data/api-data/mock-api.data.json
+    tests:
+      - tests/ui-tests/mockingApi.spec.ts
+
+  restful-booker-api:
+    owner: qa-api
+    jiraProject: API-BOOKER
+    businessArea: API Integration
+    code:
+      - utils/commonApiUtils.ts
+      - data/api-data/api-path-data.json
+      - data/api-data/restful-booker-api-module.data.json
+    tests:
+      - tests/api-tests/restful-booker-api.module.spec.ts
+
+  google-place-api:
+    owner: qa-api
+    jiraProject: API-GOOGLE
+    businessArea: API Integration
+    code:
+      - data/api-data/google-api-data.json
+    tests:
+      - tests/api-tests/googleApi.spec.ts
+
+  framework-core:
+    owner: qa-platform
+    jiraProject: HRM-FW
+    businessArea: Test Infrastructure
+    code:
+      - playwright.config.ts
+      - fixtures/**
+      - utils/**
+      - env-files/**
+      - src/agents/**
+      - config/**
+    tests:
+      - tests/**

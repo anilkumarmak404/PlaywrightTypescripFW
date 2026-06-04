@@ -1,7 +1,8 @@
 import { test, expect } from '../../fixtures/hooks-fixture.ts'
 
+test.setTimeout(120000);
 
-test('Global setup for login', async ({ page, loginPage, commonUtils, dashboardPage }) => {
+test('@id:SETUP-001 @feature:authentication-setup @owner:qa-auth @jira:HRM-AUTH-SETUP Global setup for login', async ({ page, loginPage, commonUtils, dashboardPage }) => {
     const decryptedPassword = commonUtils.decryptData(process.env.PASSWORD as string);
     await loginPage.gotoOrangeHRM();
     await loginPage.loginToOranageHRM(process.env.USER_NAME as string, decryptedPassword);

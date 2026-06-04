@@ -2,9 +2,6 @@
 import { Page, Locator } from '@playwright/test';
 
 export class Loginpage {
-    static userNameInput(): any {
-        throw new Error('Method not implemented.');
-    }
     readonly page: Page;
     readonly userNameInput: Locator;
     readonly passwordInput: Locator;
@@ -12,9 +9,9 @@ export class Loginpage {
     readonly invalidCredentailErrorPopup: Locator
     constructor(page: Page) {
         this.page = page;
-        this.userNameInput = page.getByRole('textbox', { name: 'Username' })
-        this.passwordInput = page.getByRole('textbox', { name: 'Password' })
-        this.loginButton = page.getByRole('button', { name: 'Login' })
+        this.userNameInput = page.locator('input[name="username"]')
+        this.passwordInput = page.locator('input[name="password"]')
+        this.loginButton = page.locator('button[type="submit"]')
         this.invalidCredentailErrorPopup = page.locator('[class*="oxd-alert-content--error"]')
 
     }
@@ -22,7 +19,11 @@ export class Loginpage {
      * Login to oraneHRM url
      */
     async gotoOrangeHRM() {
-        await this.page.goto(`${process.env.BASE_URL}/web/index.php/auth/login`);
+        await this.page.goto(`${process.env.BASE_URL}/web/index.php/auth/login`, {
+            waitUntil: 'commit',
+            timeout: 90000
+        });
+        await this.userNameInput.waitFor();
 
     }
     /**

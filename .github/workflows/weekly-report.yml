@@ -1,0 +1,46 @@
+name: Weekly Executive Quality Report
+
+on:
+  schedule:
+    # 03:30 UTC every Monday = 09:00 IST every Monday
+    - cron: '30 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  weekly-report:
+    name: Weekly executive PDF
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      CI: true
+      ENV_NAME: demo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate executive PDF
+        run: npm run agent:weekly-pdf
+
+      - name: Upload weekly scorecard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-quality-scorecard
+          retention-days: 30
+          path: |
+            reports/executive/weekly-quality-scorecard.pdf
+            reports/executive/weekly-quality-scorecard.html

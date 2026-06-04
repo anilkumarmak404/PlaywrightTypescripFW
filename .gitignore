@@ -6,3 +6,28 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Test and report artifacts
+/allure-results/
+/allure-report/
+/reports/
+
+# Agent/runtime generated state
+/agent-state/
+
+# Logs and local crash dumps
+*.log
+*.stackdump
+
+# Local environment files
+.env
+.env.*
+!.env.example
+env-files/.env.*
+!env-files/.env.*.example
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

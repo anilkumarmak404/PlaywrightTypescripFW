@@ -1,0 +1,25 @@
+{
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Kolkata",
+  "labels": ["dependencies"],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["@playwright/test", "playwright"],
+      "groupName": "playwright",
+      "addLabels": ["playwright", "e2e", "needs-qa-review"],
+      "automerge": false
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    }
+  ]
+}

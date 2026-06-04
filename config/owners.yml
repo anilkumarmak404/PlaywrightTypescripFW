@@ -1,0 +1,16 @@
+owners:
+  qa-auth:
+    slack: "@qa-auth"
+    email: "qa-auth@example.com"
+
+  qa-hr:
+    slack: "@qa-hr"
+    email: "qa-hr@example.com"
+
+  qa-api:
+    slack: "@qa-api"
+    email: "qa-api@example.com"
+
+  qa-platform:
+    slack: "@qa-platform"
+    email: "qa-platform@example.com"
