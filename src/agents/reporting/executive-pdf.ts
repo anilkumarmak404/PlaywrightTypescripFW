@@ -51,7 +51,10 @@ export async function generateExecutivePdf() {
   const { default: puppeteer } = await import('puppeteer');
 
   const browser = await puppeteer.launch({
-    headless: true
+    headless: true,
+    args: process.env.CI
+      ? ['--no-sandbox', '--disable-setuid-sandbox']
+      : []
   });
 
   const page = await browser.newPage();
