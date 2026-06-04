@@ -2,6 +2,8 @@
   "extends": ["config:recommended"],
   "timezone": "Asia/Kolkata",
   "labels": ["dependencies"],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Dependency Dashboard",
   "lockFileMaintenance": {
     "enabled": true
   },
