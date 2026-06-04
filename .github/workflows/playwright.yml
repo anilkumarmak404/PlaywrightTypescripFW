@@ -12,14 +12,30 @@ on:
   workflow_dispatch:
     inputs:
       env_name:
-        description: Environment file name to load
+        description: GitHub environment / ENV_NAME to use
         required: false
         default: demo
         type: choice
         options:
           - demo
           - qa
+          - stage
           - dev
+      test_command:
+        description: npm script to execute
+        required: false
+        default: test_demo_ff_hl
+        type: choice
+        options:
+          - test_demo_ff_hl
+          - test_demo_cr_hl
+          - test_demo_ff_hd
+          - test_demo_cr_hd
+          - test_demo
+          - test_qa
+          - test_qa_cr_hd_@SMOKE
+          - test_qa_api
+          - test_demo_api
 
 permissions:
   contents: read
@@ -31,12 +47,15 @@ jobs:
     name: Playwright E2E + Reporting Agent
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    environment: ${{ inputs.env_name || 'demo' }}
 
     env:
       CI: true
-      ENV_NAME: ${{ github.event.inputs.env_name || 'demo' }}
+      ENV_NAME: ${{ inputs.env_name || 'demo' }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       BASE_URL: ${{ secrets.BASE_URL }}
+      USER_NAME: ${{ secrets.USER_NAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
       API_USERNAME: ${{ secrets.API_USERNAME }}
       API_PASSWORD: ${{ secrets.API_PASSWORD }}
@@ -52,7 +71,7 @@ jobs:
       CONFLUENCE_PAGE_ID: ${{ secrets.CONFLUENCE_PAGE_ID }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       PUSHGATEWAY_URL: ${{ secrets.PUSHGATEWAY_URL }}
-      PUSHGATEWAY_JOB: playwright-reporting
+      PUSHGATEWAY_JOB: ${{ secrets.PUSHGATEWAY_JOB || 'playwright-reporting' }}
 
     steps:
       - name: Checkout repo
@@ -73,11 +92,22 @@ jobs:
       - name: TypeScript check
         run: npx tsc --noEmit
 
+      - name: Validate required secrets
+        run: |
+          missing=0
+          for name in BASE_URL USER_NAME PASSWORD SECRET_KEY; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is not configured for environment '${ENV_NAME}'"
+              missing=1
+            fi
+          done
+          exit $missing
+
       - name: Clean Allure output
         run: npm run clean:allure
 
       - name: Run Playwright tests
-        run: npm run test:e2e:ci
+        run: npm run ${{ inputs.test_command || 'test:e2e:ci' }}
 
       - name: Generate Allure report
         if: always()
