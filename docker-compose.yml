@@ -6,7 +6,7 @@ services:
       - "9091:9091"
 
   prometheus:
-    image: prom/prometheus:v3.7.3
+    image: prom/prometheus:v3.12.0
     container_name: playwright-prometheus
     ports:
       - "9090:9090"
