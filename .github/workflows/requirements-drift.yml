@@ -2,8 +2,8 @@ name: Requirements Drift Detection
 
 on:
   schedule:
-    # Every 30 minutes. Keep Jira API limits in mind.
-    - cron: '*/30 * * * *'
+    # 03:30 UTC = 09:00 IST daily
+    - cron: '30 3 * * *'
   workflow_dispatch:
 
 permissions:

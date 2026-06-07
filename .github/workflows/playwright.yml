@@ -1,6 +1,9 @@
 name: Playwright E2E
 
 on:
+  schedule:
+    # 03:30 UTC = 09:00 IST daily
+    - cron: '30 3 * * *'
   push:
     branches:
       - main
