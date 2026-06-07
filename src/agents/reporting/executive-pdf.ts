@@ -1,4 +1,6 @@
 import fs from 'fs-extra';
+import path from 'path';
+import { pathToFileURL } from 'url';
 import { readJson } from '../shared/state-store';
 
 export async function generateExecutivePdf() {
@@ -12,10 +14,12 @@ export async function generateExecutivePdf() {
   const failed = latestResults.filter((r) => r.status === 'failed').length;
   const passRate = total === 0 ? 0 : (passed / total) * 100;
 
-  await fs.ensureDir('reports/executive');
-
-  const htmlPath = 'reports/executive/weekly-quality-scorecard.html';
-  const pdfPath = 'reports/executive/weekly-quality-scorecard.pdf';
+  const reportDir = await resolveReportDir();
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const htmlPath = path.join(reportDir, `weekly-quality-scorecard-${timestamp}.html`);
+  const pdfPath = path.join(reportDir, `weekly-quality-scorecard-${timestamp}.pdf`);
+  const latestHtmlPath = path.join(reportDir, 'weekly-quality-scorecard.html');
+  const latestPdfPath = path.join(reportDir, 'weekly-quality-scorecard.pdf');
 
   const html = `
     <html>
@@ -55,21 +59,56 @@ export async function generateExecutivePdf() {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
   });
 
-  const page = await browser.newPage();
+  try {
+    const page = await browser.newPage();
 
-  await page.goto(`file://${process.cwd()}/${htmlPath}`, {
-    waitUntil: 'networkidle2'
-  });
+    await page.goto(pathToFileURL(htmlPath).toString(), {
+      waitUntil: 'networkidle2'
+    });
 
-  await page.pdf({
-    path: pdfPath,
-    format: 'A4',
-    printBackground: true
-  });
+    await page.pdf({
+      path: pdfPath,
+      format: 'A4',
+      printBackground: true
+    });
+  } finally {
+    await browser.close();
+  }
 
-  await browser.close();
+  await copyLatestIfPossible(htmlPath, latestHtmlPath);
+  await copyLatestIfPossible(pdfPath, latestPdfPath);
 
   console.log(`PDF generated at ${pdfPath}`);
+}
+
+async function resolveReportDir() {
+  const preferredDir = path.resolve('reports/executive');
+  const fallbackDir = path.resolve('agent-state/executive-report');
+
+  for (const dir of [preferredDir, fallbackDir]) {
+    try {
+      await fs.ensureDir(dir);
+      const probePath = path.join(dir, `.write-check-${process.pid}.tmp`);
+      await fs.writeFile(probePath, '');
+      await fs.remove(probePath);
+      return dir;
+    } catch {
+      // Try the next output directory.
+    }
+  }
+
+  throw new Error('No writable directory found for executive report output.');
+}
+
+async function copyLatestIfPossible(sourcePath: string, destinationPath: string) {
+  try {
+    await fs.copy(sourcePath, destinationPath, { overwrite: true });
+  } catch (error) {
+    console.warn(
+      `Could not update latest report ${destinationPath}. The timestamped report was still generated.`,
+      error
+    );
+  }
 }
 
 generateExecutivePdf().catch((error) => {

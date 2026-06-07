@@ -45,5 +45,5 @@ jobs:
           name: weekly-quality-scorecard
           retention-days: 30
           path: |
-            reports/executive/weekly-quality-scorecard.pdf
-            reports/executive/weekly-quality-scorecard.html
+            reports/executive/
+            agent-state/executive-report/
