@@ -2,8 +2,8 @@ name: Weekly Executive Quality Report
 
 on:
   schedule:
-    # 03:30 UTC = 09:00 IST daily
-    - cron: '30 3 * * *'
+    # 03:30 UTC every Monday = 09:00 IST every Monday
+    - cron: '30 3 * * 1'
   workflow_dispatch:
 
 permissions:
