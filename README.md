@@ -13,9 +13,9 @@ Enterprise-ready Playwright TypeScript framework with UI tests, API tests, Page 
 | `data/` | Test data for UI and API modules |
 | `config/` | Feature maps, owners, and quality gate rules |
 | `src/reporters/` | Custom Playwright reporter for AI/reporting data |
-| `src/agents/maintenance/` | Agents for dead tests, coverage drift, dependency health, redundant tests |
-| `src/agents/reporting/` | Agents for Confluence, Jira, Slack, Grafana, PDF reporting |
-| `src/agents/chaos/` | Chaos checks for framework resilience |
+| `python_agents/agents/maintenance/` | Agents for dead tests, coverage drift, dependency health, redundant tests |
+| `python_agents/agents/reporting/` | Agents for Confluence, Jira, Slack, Grafana, PDF reporting |
+| `python_agents/agents/chaos/` | Chaos checks for framework resilience |
 | `observability/` | Prometheus, Pushgateway, and Grafana dashboard setup |
 | `env-files/` | Environment examples for dev, QA, demo |
 
@@ -283,7 +283,7 @@ Maintenance agents check:
 Confluence report code:
 
 ```text
-src/agents/reporting/confluence-report.ts
+python_agents/agents/reporting/confluence_client.py
 ```
 
 Before running, configure:
@@ -339,7 +339,7 @@ observability/grafana/dashboards/playwright-quality.json
 Metrics are pushed by:
 
 ```text
-src/agents/reporting/grafana-metrics.ts
+python_agents/agents/reporting/grafana_metrics.py
 ```
 
 Run metrics push:

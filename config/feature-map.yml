@@ -62,7 +62,7 @@ features:
       - fixtures/**
       - utils/**
       - env-files/**
-      - src/agents/**
+      - python_agents/**
       - config/**
     tests:
       - tests/**

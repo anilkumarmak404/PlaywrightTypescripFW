@@ -30,7 +30,7 @@ python_agents/
 
 ## Python Folder Structure
 
-The Python agents mirror the TypeScript agent layout:
+The Python agents use the same domain layout as the original agent implementation:
 
 ```text
 python_agents/
@@ -76,7 +76,7 @@ python_agents/
       state_store.py
 ```
 
-Use `agents/` for both agent behavior and reusable shared utilities. The `agents/shared/` package mirrors the TypeScript `src/agents/shared/` layout.
+Use `agents/` for both agent behavior and reusable shared utilities. The `agents/shared/` package contains framework-neutral clients and helpers for Jira, Confluence, Slack, file IO, fingerprints, metadata, and result parsing.
 
 Also copy these optional config files when available:
 
