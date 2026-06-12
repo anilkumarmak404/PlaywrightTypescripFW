@@ -191,6 +191,59 @@ Run reporting agent:
 npm run agent:reporting
 ```
 
+## Universal Python Agents
+
+This repository uses framework-neutral Python agents in:
+
+```text
+python_agents/
+```
+
+Python agent layout:
+
+```text
+python_agents/
+  cli.py
+  agents/
+    chaos/
+    maintenance/
+    reporting/
+    shared/
+```
+
+They can run on Playwright, Selenium Java, Cypress, Pytest, or any framework that produces JUnit XML/JSON results. The main `agent:*` npm scripts point to these Python implementations.
+
+Run against this Playwright framework:
+
+```bash
+npm run agent:all
+```
+
+Python agent commands:
+
+```bash
+npm run agent:normalize
+npm run agent:maintenance
+npm run agent:requirements
+npm run agent:jira:check
+npm run agent:reporting
+npm run agent:weekly-pdf
+npm run agent:chaos
+npm run agent:all
+```
+
+Run against another framework:
+
+```bash
+python -m python_agents.cli all --framework junit --results "test-results/**/*.xml"
+```
+
+Detailed migration steps are documented here:
+
+```text
+docs/universal-python-agents.md
+```
+
 The reporting agent can:
 
 - Parse latest Playwright results
@@ -217,6 +270,7 @@ npm run agent:chaos
 
 Maintenance agents check:
 
+- Enterprise readiness
 - Dead tests
 - Coverage drift
 - Requirement drift
