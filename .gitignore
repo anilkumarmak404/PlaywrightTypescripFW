@@ -19,6 +19,13 @@ node_modules/
 *.log
 *.stackdump
 
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
 # Local environment files
 .env
 .env.*
