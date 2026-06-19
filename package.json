@@ -39,6 +39,8 @@
     "agent:weekly-pdf": "npm run agent:py -- weekly-pdf",
     "agent:chaos": "npm run agent:py -- chaos",
     "agent:all": "npm run agent:py -- all",
+    "agent:ui:install": "python -m pip install -r requirements.txt",
+    "agent:ui": "python -m streamlit run python_agents/ui/app.py --server.address localhost --server.port 8501 --server.headless true --global.developmentMode false",
     "observability:up": "docker compose up -d prometheus pushgateway grafana",
     "observability:down": "docker compose down",
     "observability:logs": "docker compose logs -f prometheus pushgateway grafana"

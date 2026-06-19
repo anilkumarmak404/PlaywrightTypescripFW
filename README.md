@@ -232,6 +232,27 @@ npm run agent:chaos
 npm run agent:all
 ```
 
+Launch the local Streamlit control center:
+
+```bash
+npm run agent:ui:install
+npm run agent:ui
+```
+
+Then open:
+
+```text
+http://localhost:8501
+```
+
+In the Streamlit UI, use the sidebar script selector to execute one script from `package.json`. Use **Run Playwright Flow** to run only the selected Playwright script, or use **Run `<script>` + Reporting Agent** to run the selected script and then refresh reporting.
+
+The environment selector includes `demo`, `qa`, and `dev`, and it also discovers additional files that match `env-files/.env.<name>`.
+
+Use the header links for **Playwright**, **Python Agents**, **Reporter**, **Slack**, **Confluence**, and **Grafana** to open the latest saved result panel for each area. Confluence and Grafana also expose external open buttons when their URLs are configured.
+
+The main dashboard shows **Live Execution Progress** below the page title. Each stage displays its own 0-100% progress, for example `Playwright E2E Flow -> Report Agent`. Completed steps turn green, the active step is blue, failed steps are red, and skipped steps are amber. The Allure Ports stage includes shortcuts for `http://localhost:5050` and `http://localhost:5051` when the all-agent flow is used.
+
 Run against another framework:
 
 ```bash
